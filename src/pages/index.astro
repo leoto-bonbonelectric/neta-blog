@@ -1,0 +1,87 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const allPosts = await getCollection('blog');
+const posts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const categoryMap: Record<string, string> = {
+  'wire-size-calculator-nec': 'Calculations',
+  'gfci-outlet-requirements-nec-2023': 'Safety / Protection',
+  'box-fill-calculation-nec-314': 'Calculations',
+  'voltage-drop-calculation-formula-nec': 'Calculations',
+  'afci-breaker-requirements-nec-2023': 'Safety / Protection',
+  'service-entrance-wire-size-calculator': 'Service & Installation',
+  'electrical-panel-clearance-requirements-nec': 'Safety / Protection',
+  'ev-charger-circuit-requirements-nec': 'Service & Installation',
+  'grounding-electrode-conductor-size-nec': 'Service & Installation',
+  'conduit-fill-calculation-nec': 'Calculations',
+};
+
+// Organization schema
+const orgSchema = {
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": "Ask NETA. Blog",
+  "description": "NEC code guides, calculations, and electrical reference for working electricians.",
+  "url": "https://blog.askneta.com",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Ask NETA.",
+    "url": "https://askneta.com"
+  }
+};
+---
+<BaseLayout
+  title="NEC Code Guides for Electricians"
+  description="Practical NEC code guides, calculations, and electrical reference articles for working electricians. Wire sizing, GFCI, AFCI, voltage drop, and more."
+>
+  <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <h1>NEC Code <em>Guides</em> for Electricians</h1>
+      <p>Practical reference articles covering calculations, code requirements, and installation best practices — backed by the 2023 NEC.</p>
+      <a href="https://apps.apple.com/us/app/ask-neta/id6747808696" target="_blank" rel="noopener"
+        style="display:inline-flex;align-items:center;gap:0.5rem;background:#10b981;color:white;padding:0.8rem 1.8rem;border-radius:8px;font-weight:700;font-size:1rem;text-decoration:none;transition:background 0.2s;"
+        onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'">
+        📱 Download Ask NETA. Free
+      </a>
+    </div>
+  </section>
+
+  <!-- Articles -->
+  <section class="articles-section container">
+    <div class="section-title">All Articles ({posts.length})</div>
+
+    <div class="article-grid">
+      {posts.map(post => {
+        const slug = post.slug;
+        const category = categoryMap[slug] || 'NEC Guide';
+        const dateStr = post.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        return (
+          <a href={`/blog/${slug}`} class="article-card">
+            <div class="article-card-tag">{category}</div>
+            <h2>{post.data.title}</h2>
+            <p>{post.data.description}</p>
+            <div class="article-card-meta">{dateStr} · NETA. Team</div>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+
+  <!-- Bottom CTA banner -->
+  <section style="background: #0f172a; padding: 3rem 1.5rem; text-align: center; margin-top: 3rem;">
+    <div class="container" style="max-width: 640px;">
+      <p style="color: #10b981; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 0.5rem;">Ask NETA.</p>
+      <h2 style="color: #f1f5f9; font-size: 1.5rem; margin: 0 0 0.75rem;">Stop Guessing. Get the Code Answer Now.</h2>
+      <p style="color: #94a3b8; margin: 0 0 1.5rem;">Ask NETA. is the AI-powered NEC reference tool for working electricians. Instant answers, zero page-flipping.</p>
+      <a href="https://apps.apple.com/us/app/ask-neta/id6747808696" target="_blank" rel="noopener"
+        style="display:inline-flex;align-items:center;gap:0.5rem;background:#10b981;color:white;padding:0.75rem 1.6rem;border-radius:8px;font-weight:700;font-size:0.95rem;text-decoration:none;">
+        🍎 Download on the App Store — Free
+      </a>
+    </div>
+  </section>
+</BaseLayout>

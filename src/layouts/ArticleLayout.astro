@@ -1,0 +1,97 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+export interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  author?: string;
+  keywords?: string;
+  slug: string;
+}
+
+const { title, description, pubDate, author, keywords, slug } = Astro.props;
+const canonicalUrl = `https://blog.askneta.com/blog/${slug}`;
+
+const dateFormatted = pubDate.toLocaleDateString('en-US', {
+  year: 'numeric', month: 'long', day: 'numeric'
+});
+
+// JSON-LD Article schema
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "datePublished": pubDate.toISOString(),
+  "dateModified": pubDate.toISOString(),
+  "author": {
+    "@type": "Organization",
+    "name": "NETA. Team",
+    "url": "https://askneta.com"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Ask NETA.",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://blog.askneta.com/favicon.svg"
+    }
+  },
+  "url": canonicalUrl,
+  "mainEntityOfPage": canonicalUrl
+};
+---
+<BaseLayout
+  title={title}
+  description={description}
+  canonicalUrl={canonicalUrl}
+  ogType="article"
+  pubDate={pubDate}
+  author={author}
+  keywords={keywords}
+>
+  <!-- Article Schema -->
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+  <article>
+    <div class="article-hero">
+      <div class="article-hero-inner">
+        <div class="article-breadcrumb">
+          <a href="/">Blog</a> &rsaquo; <span>{title}</span>
+        </div>
+        <h1>{title}</h1>
+        <div class="article-meta">
+          By {author || 'NETA. Team'} &nbsp;·&nbsp; {dateFormatted}
+        </div>
+      </div>
+    </div>
+
+    <div class="article-body">
+      <slot />
+
+      <!-- Bottom CTA -->
+      <div class="cta-box" style="margin-top: 3rem;">
+        <div class="cta-box-label">⚡ Ask NETA.</div>
+        <h3>Get Instant NEC Answers on the Job Site</h3>
+        <p>Stop flipping through the code book. Ask NETA. gives electricians fast, accurate NEC answers powered by AI. Free to download.</p>
+        <div class="cta-buttons">
+          <a href="https://apps.apple.com/us/app/ask-neta/id6747808696" class="cta-btn cta-btn-primary" target="_blank" rel="noopener">
+            🍎 App Store — Free
+          </a>
+          <a href="https://askneta.com" class="cta-btn cta-btn-secondary" target="_blank" rel="noopener">
+            🤖 Google Play — Coming Soon
+          </a>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- Sticky bottom CTA -->
+  <div class="sticky-cta" id="stickyCta">
+    <span class="sticky-cta-text">⚡ <strong>Get instant NEC answers</strong> — Download Ask NETA. free</span>
+    <a href="https://apps.apple.com/us/app/ask-neta/id6747808696" class="sticky-cta-btn" target="_blank" rel="noopener">App Store</a>
+    <a href="https://askneta.com" class="sticky-cta-btn" target="_blank" rel="noopener" style="background: #1e293b; border: 1px solid #334155;">Google Play</a>
+    <button class="sticky-cta-close" onclick="document.getElementById('stickyCta').style.display='none'; document.body.style.paddingBottom='0'" aria-label="Close">×</button>
+  </div>
+</BaseLayout>
