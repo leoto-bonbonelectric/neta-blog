@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conduit Fill Calculator (NEC Chapter 9) — Free NEC Calculator | Ask NETA.</title>
+  <meta name="description" content="Free NEC conduit fill calculator for EMT, RMC, IMC, PVC, and FMC. Instantly check if your conduit is code-compliant per NEC Chapter 9 Tables.">
+  <meta name="keywords" content="conduit fill calculator, NEC chapter 9, EMT fill, THHN conduit fill, wire fill percentage">
+  <link rel="canonical" href="https://askneta.com/tools/conduit-fill-calculator">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <meta property="og:title" content="Conduit Fill Calculator (NEC Chapter 9) | Ask NETA.">
+  <meta property="og:description" content="Free NEC conduit fill calculator. Check EMT, RMC, IMC, PVC, FMC compliance instantly.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Roboto', sans-serif; background: #f3f4f6; color: #1f2937; min-height: 100vh; }
+    header {
+      background: #10b981; color: white; padding: 16px 20px;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    }
+    .logo { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px; }
+    .logo span { opacity: 0.85; font-weight: 400; font-size: 1rem; margin-left: 8px; }
+    .header-nav a { color: white; text-decoration: none; font-size: 0.85rem; opacity: 0.9; margin-left: 12px; }
+    main { max-width: 680px; margin: 0 auto; padding: 24px 16px 40px; }
+    h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; color: #111827; }
+    .intro { font-size: 0.95rem; color: #4b5563; line-height: 1.6; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid #e5e7eb; }
+    .intro strong { color: #10b981; }
+    .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    .card h2 { font-size: 1rem; font-weight: 700; color: #10b981; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; }
+    label { display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 4px; }
+    select, input[type="number"] {
+      width: 100%; padding: 10px 12px; border: 1.5px solid #d1d5db; border-radius: 8px;
+      font-size: 1rem; font-family: inherit; color: #111827; background: white;
+      appearance: none; -webkit-appearance: none; transition: border-color 0.15s;
+    }
+    select:focus, input[type="number"]:focus { outline: none; border-color: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,0.12); }
+    .form-row { margin-bottom: 14px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 480px) { .form-grid { grid-template-columns: 1fr; } }
+    .helper-text { font-size: 0.78rem; color: #9ca3af; margin-top: 3px; }
+    .btn-calc {
+      display: block; width: 100%; padding: 14px; background: #10b981; color: white;
+      border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 700; cursor: pointer;
+      transition: background 0.15s, transform 0.1s; font-family: inherit; letter-spacing: 0.3px;
+    }
+    .btn-calc:hover { background: #059669; }
+    .btn-calc:active { transform: scale(0.98); }
+    .reset-btn {
+      display: block; width: 100%; padding: 10px; background: transparent; color: #6b7280;
+      border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 0.9rem; cursor: pointer;
+      font-family: inherit; margin-top: 8px; transition: all 0.15s;
+    }
+    .reset-btn:hover { border-color: #10b981; color: #10b981; }
+    #results { display: none; }
+    .result-box { background: white; border-radius: 12px; padding: 24px 20px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    .result-status { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .status-badge { font-size: 1.4rem; font-weight: 700; padding: 6px 20px; border-radius: 30px; letter-spacing: 1px; }
+    .badge-pass { background: #d1fae5; color: #065f46; }
+    .badge-fail { background: #fee2e2; color: #991b1b; }
+    .result-label { font-size: 0.95rem; color: #6b7280; }
+    .result-numbers { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+    @media (max-width: 400px) { .result-numbers { grid-template-columns: 1fr 1fr; } }
+    .result-metric { background: #f9fafb; border-radius: 8px; padding: 12px; text-align: center; }
+    .result-metric .value { font-size: 1.4rem; font-weight: 700; color: #111827; }
+    .result-metric .unit { font-size: 0.75rem; color: #9ca3af; }
+    .result-metric .metric-label { font-size: 0.75rem; color: #6b7280; margin-top: 2px; }
+    .progress-bar-wrap { background: #e5e7eb; border-radius: 8px; height: 12px; overflow: hidden; margin-top: 4px; }
+    .progress-bar { height: 100%; border-radius: 8px; transition: width 0.4s ease; }
+    .progress-pass { background: #10b981; }
+    .progress-fail { background: #ef4444; }
+    .progress-label { font-size: 0.8rem; color: #6b7280; margin-top: 4px; }
+    .breakdown-title { font-size: 0.8rem; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .breakdown-row { display: flex; justify-content: space-between; font-size: 0.875rem; color: #374151; padding: 4px 0; border-bottom: 1px solid #f3f4f6; }
+    .breakdown-row:last-child { border-bottom: none; }
+    .fill-rule-info { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px; margin-bottom: 16px; font-size: 0.875rem; color: #065f46; }
+    .fill-rule-info strong { display: block; margin-bottom: 4px; }
+    .conductor-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 480px) { .conductor-grid { grid-template-columns: 1fr; } }
+    .footer-cta { background: #111827; color: white; border-radius: 12px; padding: 24px 20px; text-align: center; margin-top: 32px; }
+    .footer-cta h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+    .footer-cta p { font-size: 0.9rem; color: #9ca3af; margin-bottom: 16px; line-height: 1.5; }
+    .app-btn { display: inline-block; background: #10b981; color: white; text-decoration: none; padding: 12px 28px; border-radius: 8px; font-weight: 700; font-size: 0.95rem; transition: background 0.15s; }
+    .app-btn:hover { background: #059669; }
+    footer { text-align: center; font-size: 0.8rem; color: #9ca3af; padding: 20px; }
+    footer a { color: #10b981; text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">NETA. <span>Free NEC Tools</span></div>
+  <nav class="header-nav">
+    <a href="box-fill-calculator.html">Box Fill</a>
+    <a href="voltage-drop-calculator.html">Voltage Drop</a>
+    <a href="nec-cheat-sheet.html">Cheat Sheet</a>
+  </nav>
+</header>
+
+<main>
+  <h1>NEC Conduit Fill Calculator — EMT, RMC, IMC, PVC & FMC</h1>
+  <p class="intro">
+    <strong>NEC Chapter 9, Table 1</strong> limits conduit fill to protect conductors from damage and overheating. The maximum fill is 40% for 3 or more wires, 53% for 2 wires, and 31% for 1 wire. Select your conduit type and size, then enter the number of conductors to check compliance.
+  </p>
+
+  <div class="card">
+    <h2>🔧 Conduit Selection</h2>
+    <div class="form-grid">
+      <div class="form-row">
+        <label for="conduitType">Conduit Type</label>
+        <select id="conduitType" onchange="updateConduitSizes()">
+          <option value="EMT">EMT (Electrical Metallic Tubing)</option>
+          <option value="RMC">RMC (Rigid Metal Conduit)</option>
+          <option value="IMC">IMC (Intermediate Metal Conduit)</option>
+          <option value="PVC40">PVC Schedule 40</option>
+          <option value="PVC80">PVC Schedule 80</option>
+          <option value="FMC">FMC (Flexible Metal Conduit)</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label for="conduitSize">Trade Size</label>
+        <select id="conduitSize" onchange="updateFillInfo()">
+          <option value="0.5">1/2"</option>
+          <option value="0.75" selected>3/4"</option>
+          <option value="1">1"</option>
+          <option value="1.25">1-1/4"</option>
+          <option value="1.5">1-1/2"</option>
+          <option value="2">2"</option>
+          <option value="2.5">2-1/2"</option>
+          <option value="3">3"</option>
+          <option value="3.5">3-1/2"</option>
+          <option value="4">4"</option>
+        </select>
+      </div>
+    </div>
+    <div id="fillRuleInfo" class="fill-rule-info">
+      <strong>📏 Available Conduit Area</strong>
+      <span id="conduitAreaText">Loading...</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🔌 Conductors (THHN/THWN)</h2>
+    <p class="helper-text" style="margin-bottom:12px">Enter the number of each conductor size. Cross-sectional areas per NEC Chapter 9, Table 5.</p>
+    <div class="conductor-grid">
+      <div class="form-row">
+        <label>#14 AWG THHN</label>
+        <input type="number" id="w14" value="0" min="0" step="1">
+        <p class="helper-text">0.0097 in²</p>
+      </div>
+      <div class="form-row">
+        <label>#12 AWG THHN</label>
+        <input type="number" id="w12" value="0" min="0" step="1">
+        <p class="helper-text">0.0133 in²</p>
+      </div>
+      <div class="form-row">
+        <label>#10 AWG THHN</label>
+        <input type="number" id="w10" value="0" min="0" step="1">
+        <p class="helper-text">0.0211 in²</p>
+      </div>
+      <div class="form-row">
+        <label>#8 AWG THHN</label>
+        <input type="number" id="w8" value="0" min="0" step="1">
+        <p class="helper-text">0.0366 in²</p>
+      </div>
+      <div class="form-row">
+        <label>#6 AWG THHN</label>
+        <input type="number" id="w6" value="0" min="0" step="1">
+        <p class="helper-text">0.0507 in²</p>
+      </div>
+      <div class="form-row">
+        <label>#4 AWG THHN</label>
+        <input type="number" id="w4" value="0" min="0" step="1">
+        <p class="helper-text">0.0824 in²</p>
+      </div>
+      <div class="form-row">
+        <label>#2 AWG THHN</label>
+        <input type="number" id="w2" value="0" min="0" step="1">
+        <p class="helper-text">0.1158 in²</p>
+      </div>
+      <div class="form-row">
+        <label>#1 AWG THHN</label>
+        <input type="number" id="w1" value="0" min="0" step="1">
+        <p class="helper-text">0.1562 in²</p>
+      </div>
+      <div class="form-row">
+        <label>1/0 AWG THHN</label>
+        <input type="number" id="w10awg" value="0" min="0" step="1">
+        <p class="helper-text">0.1855 in²</p>
+      </div>
+      <div class="form-row">
+        <label>2/0 AWG THHN</label>
+        <input type="number" id="w20awg" value="0" min="0" step="1">
+        <p class="helper-text">0.2223 in²</p>
+      </div>
+      <div class="form-row">
+        <label>3/0 AWG THHN</label>
+        <input type="number" id="w30awg" value="0" min="0" step="1">
+        <p class="helper-text">0.2679 in²</p>
+      </div>
+      <div class="form-row">
+        <label>4/0 AWG THHN</label>
+        <input type="number" id="w40awg" value="0" min="0" step="1">
+        <p class="helper-text">0.3237 in²</p>
+      </div>
+      <div class="form-row">
+        <label>250 kcmil THHN</label>
+        <input type="number" id="w250" value="0" min="0" step="1">
+        <p class="helper-text">0.3970 in²</p>
+      </div>
+      <div class="form-row">
+        <label>350 kcmil THHN</label>
+        <input type="number" id="w350" value="0" min="0" step="1">
+        <p class="helper-text">0.5346 in²</p>
+      </div>
+      <div class="form-row">
+        <label>500 kcmil THHN</label>
+        <input type="number" id="w500" value="0" min="0" step="1">
+        <p class="helper-text">0.7854 in²</p>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-calc" onclick="calculate()">Calculate Conduit Fill</button>
+  <button class="reset-btn" onclick="resetForm()">Reset</button>
+
+  <div id="results">
+    <div class="result-box">
+      <div class="result-status">
+        <div class="status-badge" id="statusBadge">PASS</div>
+        <div class="result-label" id="statusText"></div>
+      </div>
+      <div class="result-numbers">
+        <div class="result-metric">
+          <div class="value" id="fillUsed">—</div>
+          <div class="unit">in²</div>
+          <div class="metric-label">Wire Area</div>
+        </div>
+        <div class="result-metric">
+          <div class="value" id="fillAllowed">—</div>
+          <div class="unit">in²</div>
+          <div class="metric-label">Allowed Fill</div>
+        </div>
+        <div class="result-metric">
+          <div class="value" id="fillPct">—</div>
+          <div class="unit">%</div>
+          <div class="metric-label">Fill Used</div>
+        </div>
+      </div>
+      <div>
+        <div class="progress-label" id="progressLabel">0% of allowable fill used</div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar" id="progressBar" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+    <div class="result-box">
+      <div class="breakdown-title">Fill Breakdown</div>
+      <div id="breakdownList"></div>
+    </div>
+  </div>
+
+  <div class="footer-cta">
+    <h3>Need more than a calculator?</h3>
+    <p>Ask NETA. gets you the full NEC answer — code citations, explanations, and job-ready answers in seconds. Free download.</p>
+    <a class="app-btn" href="https://apps.apple.com/us/app/ask-neta/id6747808696?utm_source=tools&utm_medium=free_tool&utm_campaign=conduit_fill_calculator" target="_blank" rel="noopener">
+      Download Ask NETA. — Free
+    </a>
+  </div>
+</main>
+
+<footer>
+  <p>&copy; 2026 Ask NETA. · <a href="https://askneta.com?utm_source=tools&utm_medium=free_tool&utm_campaign=conduit_fill_calculator">askneta.com</a> · NEC calculations are for reference only; verify with the AHJ.</p>
+</footer>
+
+<script>
+  // NEC Chapter 9, Table 4 — Internal cross-sectional areas (sq in) for 40% fill
+  // Format: { conduitType: { tradeSize: totalInternalArea } }
+  // Total internal area (100%) — 40% fill = allowable for 3+ wires
+  const CONDUIT_AREAS = {
+    EMT: {
+      '0.5': 0.304, '0.75': 0.533, '1': 0.864, '1.25': 1.496, '1.5': 2.036,
+      '2': 3.356, '2.5': 5.858, '3': 8.846, '3.5': 11.545, '4': 14.753
+    },
+    RMC: {
+      '0.5': 0.314, '0.75': 0.549, '1': 0.887, '1.25': 1.526, '1.5': 2.071,
+      '2': 3.408, '2.5': 5.452, '3': 8.085, '3.5': 10.694, '4': 13.631
+    },
+    IMC: {
+      '0.5': 0.342, '0.75': 0.586, '1': 0.959, '1.25': 1.647, '1.5': 2.225,
+      '2': 3.630, '2.5': 5.135, '3': 7.922, '3.5': 10.557, '4': 13.496
+    },
+    PVC40: {
+      '0.5': 0.285, '0.75': 0.508, '1': 0.832, '1.25': 1.453, '1.5': 1.986,
+      '2': 3.291, '2.5': 5.453, '3': 8.085, '3.5': 10.694, '4': 13.631
+    },
+    PVC80: {
+      '0.5': 0.217, '0.75': 0.409, '1': 0.688, '1.25': 1.237, '1.5': 1.711,
+      '2': 2.874, '2.5': 4.119, '3': 6.342, '3.5': 8.688, '4': 11.258
+    },
+    FMC: {
+      '0.5': 0.317, '0.75': 0.533, '1': 0.817, '1.25': 1.277, '1.5': 1.858,
+      '2': 3.317, '2.5': 5.281, '3': 7.475, '3.5': 9.621, '4': 12.566
+    }
+  };
+
+  // NEC Chapter 9, Table 5 — THHN/THWN wire cross-sectional areas (sq in)
+  const WIRE_AREAS = {
+    '14': 0.0097,
+    '12': 0.0133,
+    '10': 0.0211,
+    '8':  0.0366,
+    '6':  0.0507,
+    '4':  0.0824,
+    '2':  0.1158,
+    '1':  0.1562,
+    '10awg': 0.1855,  // 1/0
+    '20awg': 0.2223,  // 2/0
+    '30awg': 0.2679,  // 3/0
+    '40awg': 0.3237,  // 4/0
+    '250':   0.3970,
+    '350':   0.5346,
+    '500':   0.7854
+  };
+
+  const WIRE_LABELS = {
+    '14': '#14 AWG THHN', '12': '#12 AWG THHN', '10': '#10 AWG THHN',
+    '8': '#8 AWG THHN', '6': '#6 AWG THHN', '4': '#4 AWG THHN',
+    '2': '#2 AWG THHN', '1': '#1 AWG THHN',
+    '10awg': '1/0 AWG THHN', '20awg': '2/0 AWG THHN',
+    '30awg': '3/0 AWG THHN', '40awg': '4/0 AWG THHN',
+    '250': '250 kcmil THHN', '350': '350 kcmil THHN', '500': '500 kcmil THHN'
+  };
+
+  const WIRE_IDS = ['14','12','10','8','6','4','2','1','10awg','20awg','30awg','40awg','250','350','500'];
+  const INPUT_IDS = ['w14','w12','w10','w8','w6','w4','w2','w1','w10awg','w20awg','w30awg','w40awg','w250','w350','w500'];
+
+  function updateConduitSizes() { updateFillInfo(); }
+
+  function updateFillInfo() {
+    const type = document.getElementById('conduitType').value;
+    const size = document.getElementById('conduitSize').value;
+    const area = CONDUIT_AREAS[type][size];
+    if (area) {
+      document.getElementById('conduitAreaText').textContent =
+        `Total area: ${area.toFixed(3)} in² | 40% fill (3+ wires): ${(area*0.4).toFixed(4)} in² | 53% fill (2 wires): ${(area*0.53).toFixed(4)} in² | 31% fill (1 wire): ${(area*0.31).toFixed(4)} in²`;
+    }
+  }
+
+  function getTotalWires() {
+    return INPUT_IDS.reduce((sum, id) => sum + (parseInt(document.getElementById(id).value) || 0), 0);
+  }
+
+  function getFillLimit(totalWires, area) {
+    if (totalWires === 1) return { pct: 0.31, label: '31% (1 wire)' };
+    if (totalWires === 2) return { pct: 0.53, label: '53% (2 wires)' };
+    return { pct: 0.40, label: '40% (3+ wires)' };
+  }
+
+  function calculate() {
+    const type = document.getElementById('conduitType').value;
+    const size = document.getElementById('conduitSize').value;
+    const internalArea = CONDUIT_AREAS[type][size];
+
+    let totalWireArea = 0;
+    let totalWires = 0;
+    const breakdown = [];
+
+    INPUT_IDS.forEach((id, idx) => {
+      const count = parseInt(document.getElementById(id).value) || 0;
+      if (count > 0) {
+        const wireKey = WIRE_IDS[idx];
+        const area = WIRE_AREAS[wireKey] * count;
+        totalWireArea += area;
+        totalWires += count;
+        breakdown.push({ label: `${count}× ${WIRE_LABELS[wireKey]}`, area: area, each: WIRE_AREAS[wireKey], count });
+      }
+    });
+
+    if (totalWires === 0) {
+      alert('Please enter at least one conductor.');
+      return;
+    }
+
+    const { pct: fillPct, label: fillLabel } = getFillLimit(totalWires, internalArea);
+    const allowedArea = internalArea * fillPct;
+    const pass = totalWireArea <= allowedArea;
+    const usedPct = (totalWireArea / internalArea) * 100;
+    const pctOfAllowed = (totalWireArea / allowedArea) * 100;
+
+    document.getElementById('results').style.display = 'block';
+    document.getElementById('fillUsed').textContent = totalWireArea.toFixed(4);
+    document.getElementById('fillAllowed').textContent = allowedArea.toFixed(4);
+    document.getElementById('fillPct').textContent = usedPct.toFixed(1);
+
+    const badge = document.getElementById('statusBadge');
+    badge.textContent = pass ? 'PASS ✓' : 'FAIL ✗';
+    badge.className = 'status-badge ' + (pass ? 'badge-pass' : 'badge-fail');
+
+    const conduitLabel = `${document.getElementById('conduitType').options[document.getElementById('conduitType').selectedIndex].text.split(' ')[0]} ${size}"`;
+    document.getElementById('statusText').textContent = pass
+      ? `${conduitLabel} passes at ${usedPct.toFixed(1)}% fill (${pctOfAllowed.toFixed(0)}% of ${fillLabel} max).`
+      : `${conduitLabel} exceeds ${fillLabel} limit. Wire area ${totalWireArea.toFixed(4)} in² > ${allowedArea.toFixed(4)} in² allowed.`;
+
+    const bar = document.getElementById('progressBar');
+    bar.style.width = Math.min(pctOfAllowed, 100) + '%';
+    bar.className = 'progress-bar ' + (pass ? 'progress-pass' : 'progress-fail');
+    document.getElementById('progressLabel').textContent =
+      `${pctOfAllowed.toFixed(1)}% of allowable ${fillLabel} fill used`;
+
+    const rows = breakdown.map(b =>
+      `<div class="breakdown-row"><span>${b.label} (${b.each} in² ea)</span><span>${b.area.toFixed(4)} in²</span></div>`
+    );
+    rows.push(`<div class="breakdown-row"><span><strong>TOTAL WIRE AREA</strong></span><span><strong>${totalWireArea.toFixed(4)} in²</strong></span></div>`);
+    rows.push(`<div class="breakdown-row"><span>Fill limit: ${fillLabel} of ${internalArea.toFixed(3)} in²</span><span>${allowedArea.toFixed(4)} in² allowed</span></div>`);
+    document.getElementById('breakdownList').innerHTML = rows.join('');
+
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function resetForm() {
+    INPUT_IDS.forEach(id => document.getElementById(id).value = '0');
+    document.getElementById('results').style.display = 'none';
+  }
+
+  // Init
+  updateFillInfo();
+</script>
+</body>
+</html>

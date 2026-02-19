@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voltage Drop Calculator — Free NEC Calculator | Ask NETA.</title>
+  <meta name="description" content="Free voltage drop calculator for electricians. Calculate voltage drop for single-phase and three-phase circuits. NEC recommends max 3% for branch circuits, 5% total.">
+  <meta name="keywords" content="voltage drop calculator, NEC voltage drop, electrician voltage drop, wire size calculator, branch circuit voltage drop">
+  <link rel="canonical" href="https://askneta.com/tools/voltage-drop-calculator">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <meta property="og:title" content="Voltage Drop Calculator | Ask NETA.">
+  <meta property="og:description" content="Free voltage drop calculator. Check NEC 3% branch circuit and 5% total compliance instantly.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Roboto', sans-serif; background: #f3f4f6; color: #1f2937; min-height: 100vh; }
+    header {
+      background: #10b981; color: white; padding: 16px 20px;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    }
+    .logo { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px; }
+    .logo span { opacity: 0.85; font-weight: 400; font-size: 1rem; margin-left: 8px; }
+    .header-nav a { color: white; text-decoration: none; font-size: 0.85rem; opacity: 0.9; margin-left: 12px; }
+    main { max-width: 680px; margin: 0 auto; padding: 24px 16px 40px; }
+    h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; color: #111827; }
+    .intro { font-size: 0.95rem; color: #4b5563; line-height: 1.6; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid #e5e7eb; }
+    .intro strong { color: #10b981; }
+    .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    .card h2 { font-size: 1rem; font-weight: 700; color: #10b981; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; }
+    label { display: block; font-size: 0.875rem; font-weight: 500; color: #374151; margin-bottom: 4px; }
+    select, input[type="number"] {
+      width: 100%; padding: 10px 12px; border: 1.5px solid #d1d5db; border-radius: 8px;
+      font-size: 1rem; font-family: inherit; color: #111827; background: white;
+      appearance: none; -webkit-appearance: none; transition: border-color 0.15s;
+    }
+    select:focus, input[type="number"]:focus { outline: none; border-color: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,0.12); }
+    .form-row { margin-bottom: 14px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 480px) { .form-grid { grid-template-columns: 1fr; } }
+    .helper-text { font-size: 0.78rem; color: #9ca3af; margin-top: 3px; }
+    .btn-calc {
+      display: block; width: 100%; padding: 14px; background: #10b981; color: white;
+      border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 700; cursor: pointer;
+      transition: background 0.15s, transform 0.1s; font-family: inherit; letter-spacing: 0.3px;
+    }
+    .btn-calc:hover { background: #059669; }
+    .btn-calc:active { transform: scale(0.98); }
+    .reset-btn {
+      display: block; width: 100%; padding: 10px; background: transparent; color: #6b7280;
+      border: 1.5px solid #d1d5db; border-radius: 8px; font-size: 0.9rem; cursor: pointer;
+      font-family: inherit; margin-top: 8px; transition: all 0.15s;
+    }
+    .reset-btn:hover { border-color: #10b981; color: #10b981; }
+    #results { display: none; }
+    .result-box { background: white; border-radius: 12px; padding: 24px 20px; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+    .result-status { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .status-badge { font-size: 1.4rem; font-weight: 700; padding: 6px 20px; border-radius: 30px; letter-spacing: 1px; }
+    .badge-pass { background: #d1fae5; color: #065f46; }
+    .badge-warn { background: #fef3c7; color: #92400e; }
+    .badge-fail { background: #fee2e2; color: #991b1b; }
+    .result-label { font-size: 0.95rem; color: #6b7280; line-height: 1.4; }
+    .result-numbers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+    @media (max-width: 500px) { .result-numbers { grid-template-columns: 1fr 1fr; } }
+    .result-metric { background: #f9fafb; border-radius: 8px; padding: 12px; text-align: center; }
+    .result-metric .value { font-size: 1.4rem; font-weight: 700; color: #111827; }
+    .result-metric .unit { font-size: 0.75rem; color: #9ca3af; }
+    .result-metric .metric-label { font-size: 0.75rem; color: #6b7280; margin-top: 2px; }
+    .progress-bar-wrap { background: #e5e7eb; border-radius: 8px; height: 12px; overflow: hidden; margin-top: 4px; }
+    .progress-bar { height: 100%; border-radius: 8px; transition: width 0.4s ease; }
+    .progress-pass { background: #10b981; }
+    .progress-warn { background: #f59e0b; }
+    .progress-fail { background: #ef4444; }
+    .progress-label { font-size: 0.8rem; color: #6b7280; margin-top: 4px; }
+    .breakdown-title { font-size: 0.8rem; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .breakdown-row { display: flex; justify-content: space-between; font-size: 0.875rem; color: #374151; padding: 6px 0; border-bottom: 1px solid #f3f4f6; }
+    .breakdown-row:last-child { border-bottom: none; }
+    .rec-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 14px; margin-top: 12px; }
+    .rec-box strong { color: #065f46; display: block; margin-bottom: 4px; font-size: 0.95rem; }
+    .rec-box p { font-size: 0.875rem; color: #374151; line-height: 1.5; }
+    .phase-toggle { display: flex; gap: 8px; }
+    .phase-btn {
+      flex: 1; padding: 10px; border: 1.5px solid #d1d5db; border-radius: 8px;
+      background: white; cursor: pointer; font-family: inherit; font-size: 0.9rem;
+      font-weight: 500; color: #374151; transition: all 0.15s; text-align: center;
+    }
+    .phase-btn.active { border-color: #10b981; background: #f0fdf4; color: #065f46; font-weight: 700; }
+    .footer-cta { background: #111827; color: white; border-radius: 12px; padding: 24px 20px; text-align: center; margin-top: 32px; }
+    .footer-cta h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+    .footer-cta p { font-size: 0.9rem; color: #9ca3af; margin-bottom: 16px; line-height: 1.5; }
+    .app-btn { display: inline-block; background: #10b981; color: white; text-decoration: none; padding: 12px 28px; border-radius: 8px; font-weight: 700; font-size: 0.95rem; transition: background 0.15s; }
+    .app-btn:hover { background: #059669; }
+    footer { text-align: center; font-size: 0.8rem; color: #9ca3af; padding: 20px; }
+    footer a { color: #10b981; text-decoration: none; }
+    .formula-note { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 10px 12px; font-size: 0.8rem; color: #64748b; margin-top: 12px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">NETA. <span>Free NEC Tools</span></div>
+  <nav class="header-nav">
+    <a href="box-fill-calculator.html">Box Fill</a>
+    <a href="conduit-fill-calculator.html">Conduit</a>
+    <a href="nec-cheat-sheet.html">Cheat Sheet</a>
+  </nav>
+</header>
+
+<main>
+  <h1>Voltage Drop Calculator — NEC 210.19 & 215.2</h1>
+  <p class="intro">
+    <strong>NEC 210.19(A) and 215.2(A)</strong> recommend keeping voltage drop to 3% or less on branch circuits, and 5% or less total (feeder + branch). Excessive voltage drop causes equipment to underperform, motors to overheat, and lights to dim. Enter your circuit details to find out if your wire size is adequate.
+  </p>
+
+  <div class="card">
+    <h2>⚡ Circuit Parameters</h2>
+    <div class="form-grid">
+      <div class="form-row">
+        <label>System Voltage</label>
+        <select id="voltage">
+          <option value="120">120V (1φ)</option>
+          <option value="208">208V</option>
+          <option value="240" selected>240V (1φ)</option>
+          <option value="277">277V (1φ)</option>
+          <option value="480">480V (3φ)</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>Phase</label>
+        <div class="phase-toggle">
+          <button class="phase-btn active" id="btn1ph" onclick="setPhase(1)">Single-Phase (1φ)</button>
+          <button class="phase-btn" id="btn3ph" onclick="setPhase(3)">Three-Phase (3φ)</button>
+        </div>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="form-row">
+        <label>Load (Amps)</label>
+        <input type="number" id="amps" placeholder="e.g. 20" min="0.1" step="0.1">
+      </div>
+      <div class="form-row">
+        <label>One-Way Wire Length (feet)</label>
+        <input type="number" id="length" placeholder="e.g. 100" min="1" step="1">
+        <p class="helper-text">Enter one-way distance (panel to load)</p>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="form-row">
+        <label>Conductor Size</label>
+        <select id="wireSize">
+          <option value="14">#14 AWG</option>
+          <option value="12" selected>#12 AWG</option>
+          <option value="10">#10 AWG</option>
+          <option value="8">#8 AWG</option>
+          <option value="6">#6 AWG</option>
+          <option value="4">#4 AWG</option>
+          <option value="3">#3 AWG</option>
+          <option value="2">#2 AWG</option>
+          <option value="1">#1 AWG</option>
+          <option value="10awg">1/0 AWG</option>
+          <option value="20awg">2/0 AWG</option>
+          <option value="30awg">3/0 AWG</option>
+          <option value="40awg">4/0 AWG</option>
+          <option value="250">250 kcmil</option>
+          <option value="350">350 kcmil</option>
+          <option value="500">500 kcmil</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>Conductor Material</label>
+        <div class="phase-toggle">
+          <button class="phase-btn active" id="btnCu" onclick="setMaterial('copper')">Copper</button>
+          <button class="phase-btn" id="btnAl" onclick="setMaterial('aluminum')">Aluminum</button>
+        </div>
+      </div>
+    </div>
+    <div class="formula-note">
+      <strong>Formulas used:</strong> Single-phase: VD = (2 × K × I × L) / CM &nbsp;|&nbsp; Three-phase: VD = (√3 × K × I × L) / CM<br>
+      K = 12.9 Ω·cmil/ft (copper) or 21.2 Ω·cmil/ft (aluminum)
+    </div>
+  </div>
+
+  <button class="btn-calc" onclick="calculate()">Calculate Voltage Drop</button>
+  <button class="reset-btn" onclick="resetForm()">Reset</button>
+
+  <div id="results">
+    <div class="result-box">
+      <div class="result-status">
+        <div class="status-badge" id="statusBadge">PASS</div>
+        <div class="result-label" id="statusText"></div>
+      </div>
+      <div class="result-numbers">
+        <div class="result-metric">
+          <div class="value" id="vdVolts">—</div>
+          <div class="unit">V drop</div>
+          <div class="metric-label">Voltage Drop</div>
+        </div>
+        <div class="result-metric">
+          <div class="value" id="vdPct">—</div>
+          <div class="unit">%</div>
+          <div class="metric-label">% Drop</div>
+        </div>
+        <div class="result-metric">
+          <div class="value" id="vdReceived">—</div>
+          <div class="unit">V received</div>
+          <div class="metric-label">End Voltage</div>
+        </div>
+      </div>
+      <div>
+        <div class="progress-label" id="progressLabel">0% voltage drop</div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar" id="progressBar" style="width:0%"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:4px;">
+          <span style="font-size:0.7rem;color:#9ca3af;">0%</span>
+          <span style="font-size:0.7rem;color:#f59e0b;">3% NEC rec.</span>
+          <span style="font-size:0.7rem;color:#ef4444;">5% max</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="result-box">
+      <div class="breakdown-title">Calculation Details</div>
+      <div id="breakdownList"></div>
+      <div id="recBox" class="rec-box" style="display:none">
+        <strong>💡 Recommended Wire Size</strong>
+        <p id="recText"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-cta">
+    <h3>Need more than a calculator?</h3>
+    <p>Ask NETA. gets you the full NEC answer — code citations, explanations, and job-ready answers in seconds. Free download.</p>
+    <a class="app-btn" href="https://apps.apple.com/us/app/ask-neta/id6747808696?utm_source=tools&utm_medium=free_tool&utm_campaign=voltage_drop_calculator" target="_blank" rel="noopener">
+      Download Ask NETA. — Free
+    </a>
+  </div>
+</main>
+
+<footer>
+  <p>&copy; 2026 Ask NETA. · <a href="https://askneta.com?utm_source=tools&utm_medium=free_tool&utm_campaign=voltage_drop_calculator">askneta.com</a> · NEC calculations are for reference only; verify with the AHJ.</p>
+</footer>
+
+<script>
+  let selectedPhase = 1;
+  let selectedMaterial = 'copper';
+
+  // Circular mil areas for standard wire sizes
+  const CM_TABLE = {
+    '14': 4110, '12': 6530, '10': 10380, '8': 16510, '6': 26240,
+    '4': 41740, '3': 52620, '2': 66360, '1': 83690,
+    '10awg': 105600, '20awg': 133100, '30awg': 167800, '40awg': 211600,
+    '250': 250000, '350': 350000, '500': 500000
+  };
+
+  const WIRE_LABELS = {
+    '14': '#14 AWG', '12': '#12 AWG', '10': '#10 AWG', '8': '#8 AWG', '6': '#6 AWG',
+    '4': '#4 AWG', '3': '#3 AWG', '2': '#2 AWG', '1': '#1 AWG',
+    '10awg': '1/0 AWG', '20awg': '2/0 AWG', '30awg': '3/0 AWG', '40awg': '4/0 AWG',
+    '250': '250 kcmil', '350': '350 kcmil', '500': '500 kcmil'
+  };
+
+  // NEC 310.16 ampacity (Cu THHN, 60°C column for conductors ≤ 100A, 75°C for larger)
+  const AMPACITY_CU = {
+    '14': 15, '12': 20, '10': 30, '8': 50, '6': 65, '4': 85, '3': 100,
+    '2': 115, '1': 130, '10awg': 150, '20awg': 175, '30awg': 200, '40awg': 230,
+    '250': 255, '350': 310, '500': 380
+  };
+
+  // Wire sizes in ascending order of CM
+  const WIRE_SIZES_ORDERED = ['14','12','10','8','6','4','3','2','1','10awg','20awg','30awg','40awg','250','350','500'];
+
+  // K values: resistivity in Ω·cmil/ft at 75°C
+  const K_VALUES = { copper: 12.9, aluminum: 21.2 };
+
+  function setPhase(n) {
+    selectedPhase = n;
+    document.getElementById('btn1ph').classList.toggle('active', n === 1);
+    document.getElementById('btn3ph').classList.toggle('active', n === 3);
+  }
+
+  function setMaterial(m) {
+    selectedMaterial = m;
+    document.getElementById('btnCu').classList.toggle('active', m === 'copper');
+    document.getElementById('btnAl').classList.toggle('active', m === 'aluminum');
+  }
+
+  function calcVD(K, I, L, CM, phase) {
+    if (phase === 1) return (2 * K * I * L) / CM;
+    return (Math.sqrt(3) * K * I * L) / CM;
+  }
+
+  function findRecommendedSize(K, I, L, voltage, phase, maxPct) {
+    for (const size of WIRE_SIZES_ORDERED) {
+      const cm = CM_TABLE[size];
+      const vd = calcVD(K, I, L, cm, phase);
+      const pct = (vd / voltage) * 100;
+      if (pct <= maxPct) return size;
+    }
+    return null;
+  }
+
+  function calculate() {
+    const voltage = parseFloat(document.getElementById('voltage').value);
+    const amps    = parseFloat(document.getElementById('amps').value);
+    const length  = parseFloat(document.getElementById('length').value);
+    const wireKey = document.getElementById('wireSize').value;
+
+    if (!amps || !length) {
+      alert('Please enter load (amps) and wire length.');
+      return;
+    }
+
+    const K  = K_VALUES[selectedMaterial];
+    const CM = CM_TABLE[wireKey];
+    const vd = calcVD(K, amps, length, CM, selectedPhase);
+    const pct = (vd / voltage) * 100;
+    const received = voltage - vd;
+
+    document.getElementById('results').style.display = 'block';
+    document.getElementById('vdVolts').textContent = vd.toFixed(2);
+    document.getElementById('vdPct').textContent = pct.toFixed(2);
+    document.getElementById('vdReceived').textContent = received.toFixed(1);
+
+    // Status
+    let status, badgeClass;
+    if (pct <= 3) {
+      status = `✓ Meets NEC 3% branch circuit recommendation (${pct.toFixed(2)}%)`;
+      badgeClass = 'badge-pass';
+      document.getElementById('statusBadge').textContent = 'PASS ✓';
+    } else if (pct <= 5) {
+      status = `⚠ Exceeds 3% branch circuit recommendation. Within 5% total budget. Consider upsizing for long-term performance.`;
+      badgeClass = 'badge-warn';
+      document.getElementById('statusBadge').textContent = 'WARNING';
+    } else {
+      status = `✗ Exceeds NEC 5% recommended maximum. Wire size must be increased.`;
+      badgeClass = 'badge-fail';
+      document.getElementById('statusBadge').textContent = 'FAIL ✗';
+    }
+
+    const badge = document.getElementById('statusBadge');
+    badge.className = 'status-badge ' + badgeClass;
+    document.getElementById('statusText').textContent = status;
+
+    // Progress bar (scaled: 0-6% = 0-100%)
+    const barPct = Math.min((pct / 6) * 100, 100);
+    const bar = document.getElementById('progressBar');
+    bar.style.width = barPct + '%';
+    bar.className = 'progress-bar ' + (pct <= 3 ? 'progress-pass' : pct <= 5 ? 'progress-warn' : 'progress-fail');
+    document.getElementById('progressLabel').textContent =
+      `${pct.toFixed(2)}% voltage drop (${vd.toFixed(2)}V on a ${voltage}V circuit)`;
+
+    // Breakdown
+    const phaseFormula = selectedPhase === 1
+      ? `VD = (2 × ${K} × ${amps}A × ${length}ft) / ${CM.toLocaleString()} CM`
+      : `VD = (√3 × ${K} × ${amps}A × ${length}ft) / ${CM.toLocaleString()} CM`;
+
+    const rows = [
+      ['Circuit', `${voltage}V, ${selectedPhase === 1 ? 'Single' : 'Three'}-Phase`],
+      ['Load', `${amps}A`],
+      ['One-way length', `${length} ft`],
+      ['Conductor', `${WIRE_LABELS[wireKey]} ${selectedMaterial} (${CM.toLocaleString()} CM)`],
+      ['K factor', `${K} Ω·cmil/ft (${selectedMaterial})`],
+      ['Formula', phaseFormula],
+      ['Voltage drop', `${vd.toFixed(3)}V (${pct.toFixed(2)}%)`],
+      ['Voltage received at load', `${received.toFixed(2)}V`],
+      ['NEC 3% limit', `${(voltage * 0.03).toFixed(2)}V | ${(voltage * 0.97).toFixed(1)}V at load`],
+      ['NEC 5% limit', `${(voltage * 0.05).toFixed(2)}V | ${(voltage * 0.95).toFixed(1)}V at load`],
+    ];
+
+    document.getElementById('breakdownList').innerHTML = rows.map(r =>
+      `<div class="breakdown-row"><span>${r[0]}</span><span>${r[1]}</span></div>`
+    ).join('');
+
+    // Recommendation
+    if (pct > 3) {
+      const recSize = findRecommendedSize(K, amps, length, voltage, selectedPhase, 3);
+      const recBox = document.getElementById('recBox');
+      const recText = document.getElementById('recText');
+      if (recSize) {
+        const recCM = CM_TABLE[recSize];
+        const recVD = calcVD(K, amps, length, recCM, selectedPhase);
+        const recPct = (recVD / voltage) * 100;
+        recText.innerHTML = `Upsize to <strong>${WIRE_LABELS[recSize]} ${selectedMaterial}</strong> to achieve ${recPct.toFixed(2)}% voltage drop (${recVD.toFixed(2)}V). This meets the NEC 3% branch circuit recommendation.`;
+        recBox.style.display = 'block';
+      } else {
+        recText.textContent = 'No standard wire size meets the 3% threshold for this circuit. Consider splitting the load or reducing circuit length.';
+        recBox.style.display = 'block';
+      }
+    } else {
+      document.getElementById('recBox').style.display = 'none';
+    }
+
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function resetForm() {
+    document.getElementById('amps').value = '';
+    document.getElementById('length').value = '';
+    document.getElementById('voltage').value = '240';
+    document.getElementById('wireSize').value = '12';
+    setPhase(1);
+    setMaterial('copper');
+    document.getElementById('results').style.display = 'none';
+  }
+</script>
+</body>
+</html>

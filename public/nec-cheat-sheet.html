@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEC Quick Reference Card — Free Electrician Cheat Sheet | Ask NETA.</title>
+  <meta name="description" content="Free printable NEC quick reference card for electricians. Wire ampacities, OCPD sizes, GFCI/AFCI requirements, and working clearances — all on one page.">
+  <meta name="keywords" content="NEC cheat sheet, electrician quick reference, wire ampacity chart, GFCI requirements, AFCI requirements, NEC 310.16">
+  <link rel="canonical" href="https://askneta.com/tools/nec-cheat-sheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <meta property="og:title" content="NEC Quick Reference Card — Free Printable | Ask NETA.">
+  <meta property="og:description" content="Free printable NEC quick reference for electricians. Ampacities, OCPD, GFCI/AFCI, clearances.">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Roboto', sans-serif; background: #f3f4f6; color: #1f2937; min-height: 100vh; }
+
+    /* SCREEN HEADER */
+    header {
+      background: #10b981; color: white; padding: 16px 20px;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    }
+    .logo { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px; }
+    .logo span { opacity: 0.85; font-weight: 400; font-size: 1rem; margin-left: 8px; }
+    .header-nav a { color: white; text-decoration: none; font-size: 0.85rem; opacity: 0.9; margin-left: 12px; }
+
+    main { max-width: 800px; margin: 0 auto; padding: 24px 16px 40px; }
+    h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; color: #111827; }
+    .intro { font-size: 0.95rem; color: #4b5563; line-height: 1.6; margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid #e5e7eb; }
+    .intro strong { color: #10b981; }
+
+    /* PRINT BUTTON */
+    .print-bar {
+      display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; align-items: center;
+    }
+    .btn-print {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #10b981; color: white; border: none; border-radius: 8px;
+      padding: 12px 24px; font-size: 1rem; font-weight: 700; cursor: pointer;
+      font-family: inherit; transition: background 0.15s;
+    }
+    .btn-print:hover { background: #059669; }
+    .print-note { font-size: 0.85rem; color: #6b7280; }
+
+    /* REFERENCE CARD */
+    #refCard {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .card-header {
+      background: #10b981;
+      color: white;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .card-header-title { font-size: 1.3rem; font-weight: 700; }
+    .card-header-sub { font-size: 0.85rem; opacity: 0.85; }
+
+    .ref-section {
+      padding: 20px 24px;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .ref-section:last-child { border-bottom: none; }
+
+    .ref-section h2 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #10b981;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* TABLES */
+    table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    th {
+      background: #f9fafb;
+      color: #374151;
+      font-weight: 700;
+      padding: 8px 10px;
+      text-align: left;
+      border-bottom: 2px solid #e5e7eb;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    td { padding: 7px 10px; border-bottom: 1px solid #f3f4f6; color: #374151; }
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background: #fafafa; }
+    .highlight-row td { background: #ecfdf5 !important; font-weight: 600; color: #065f46; }
+
+    /* AMPACITY TABLE — responsive scroll */
+    .table-scroll { overflow-x: auto; }
+
+    /* OCPD chips */
+    .ocpd-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .ocpd-chip {
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #374151;
+      white-space: nowrap;
+    }
+    .ocpd-chip.common { background: #ecfdf5; border-color: #6ee7b7; color: #065f46; }
+
+    /* GFCI/AFCI two-col layout */
+    .gfci-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 560px) { .gfci-grid { grid-template-columns: 1fr; } }
+
+    .gfci-list { list-style: none; }
+    .gfci-list li {
+      padding: 5px 0;
+      border-bottom: 1px solid #f3f4f6;
+      font-size: 0.875rem;
+      color: #374151;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .gfci-list li::before { content: '•'; color: #10b981; font-weight: 700; flex-shrink: 0; }
+    .gfci-list li:last-child { border-bottom: none; }
+
+    .section-label { font-size: 0.8rem; font-weight: 700; color: #6b7280; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.3px; }
+
+    /* CLEARANCES */
+    .clearance-note { font-size: 0.8rem; color: #6b7280; margin-top: 8px; font-style: italic; }
+
+    /* FOOTER CTA IN CARD */
+    .card-cta {
+      background: #111827;
+      color: white;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .card-cta p { font-size: 0.9rem; color: #d1d5db; max-width: 400px; line-height: 1.4; }
+    .card-cta-btn {
+      display: inline-block; background: #10b981; color: white; text-decoration: none;
+      padding: 10px 20px; border-radius: 8px; font-weight: 700; font-size: 0.9rem;
+      white-space: nowrap; transition: background 0.15s;
+    }
+    .card-cta-btn:hover { background: #059669; }
+
+    /* SCREEN-ONLY footer CTA */
+    .footer-cta { background: #111827; color: white; border-radius: 12px; padding: 24px 20px; text-align: center; margin-top: 32px; }
+    .footer-cta h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+    .footer-cta p { font-size: 0.9rem; color: #9ca3af; margin-bottom: 16px; line-height: 1.5; }
+    .app-btn { display: inline-block; background: #10b981; color: white; text-decoration: none; padding: 12px 28px; border-radius: 8px; font-weight: 700; font-size: 0.95rem; transition: background 0.15s; }
+    .app-btn:hover { background: #059669; }
+    footer { text-align: center; font-size: 0.8rem; color: #9ca3af; padding: 20px; }
+    footer a { color: #10b981; text-decoration: none; }
+
+    /* ========== PRINT STYLES ========== */
+    @media print {
+      * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+      body { background: white; }
+      header, .print-bar, .intro, .footer-cta, footer { display: none !important; }
+      main { padding: 0; max-width: 100%; }
+      #refCard { box-shadow: none; border-radius: 0; border: 1px solid #d1d5db; }
+      .card-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: #10b981 !important; }
+      .ref-section { page-break-inside: avoid; }
+      .gfci-grid { grid-template-columns: 1fr 1fr; }
+      .card-cta { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: #111827 !important; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">NETA. <span>Free NEC Tools</span></div>
+  <nav class="header-nav">
+    <a href="box-fill-calculator.html">Box Fill</a>
+    <a href="conduit-fill-calculator.html">Conduit</a>
+    <a href="voltage-drop-calculator.html">Voltage Drop</a>
+  </nav>
+</header>
+
+<main>
+  <h1>NEC Quick Reference Card — Free Printable Cheat Sheet</h1>
+  <p class="intro">
+    <strong>Save this page and print it for the job.</strong> This NEC quick reference card covers the most-used tables every electrician needs on site: wire ampacities, OCPD sizes, GFCI/AFCI locations, and working clearances. Based on the 2023 NEC. Always verify with the AHJ and current adopted code edition.
+  </p>
+
+  <div class="print-bar">
+    <button class="btn-print" onclick="window.print()">
+      🖨 Print / Save as PDF
+    </button>
+    <span class="print-note">Use browser print → Save as PDF for a clean printable card</span>
+  </div>
+
+  <!-- THE REFERENCE CARD -->
+  <div id="refCard">
+
+    <!-- CARD HEADER -->
+    <div class="card-header">
+      <div>
+        <div class="card-header-title">NETA. — NEC Quick Reference Card</div>
+        <div class="card-header-sub">2023 NEC | For field reference only — verify with AHJ | askneta.com</div>
+      </div>
+    </div>
+
+    <!-- SECTION 1: WIRE AMPACITIES -->
+    <div class="ref-section">
+      <h2>⚡ Wire Ampacities — NEC Table 310.16</h2>
+      <p style="font-size:0.8rem;color:#6b7280;margin-bottom:10px">Copper conductors with 75°C insulation (THHN/THWN-2), not more than 3 current-carrying conductors in raceway, ambient 30°C.</p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>AWG / kcmil</th>
+              <th>Cu THHN<br>Ampacity</th>
+              <th>Al THHN<br>Ampacity</th>
+              <th>Common<br>OCPD</th>
+              <th>Conduit<br>Fill (in²)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="highlight-row"><td>#14 AWG</td><td>15A</td><td>—</td><td>15A</td><td>0.0097</td></tr>
+            <tr class="highlight-row"><td>#12 AWG</td><td>20A</td><td>15A</td><td>20A</td><td>0.0133</td></tr>
+            <tr class="highlight-row"><td>#10 AWG</td><td>30A</td><td>25A</td><td>30A</td><td>0.0211</td></tr>
+            <tr><td>#8 AWG</td><td>50A</td><td>40A</td><td>50A</td><td>0.0366</td></tr>
+            <tr><td>#6 AWG</td><td>65A</td><td>50A</td><td>60A</td><td>0.0507</td></tr>
+            <tr><td>#4 AWG</td><td>85A</td><td>65A</td><td>70–90A</td><td>0.0824</td></tr>
+            <tr><td>#3 AWG</td><td>100A</td><td>75A</td><td>90–100A</td><td>0.1041</td></tr>
+            <tr><td>#2 AWG</td><td>115A</td><td>90A</td><td>100–110A</td><td>0.1158</td></tr>
+            <tr><td>#1 AWG</td><td>130A</td><td>100A</td><td>110–125A</td><td>0.1562</td></tr>
+            <tr><td>1/0 AWG</td><td>150A</td><td>120A</td><td>125–150A</td><td>0.1855</td></tr>
+            <tr><td>2/0 AWG</td><td>175A</td><td>135A</td><td>150–175A</td><td>0.2223</td></tr>
+            <tr><td>3/0 AWG</td><td>200A</td><td>155A</td><td>175–200A</td><td>0.2679</td></tr>
+            <tr><td>4/0 AWG</td><td>230A</td><td>180A</td><td>200–225A</td><td>0.3237</td></tr>
+            <tr><td>250 kcmil</td><td>255A</td><td>205A</td><td>225–250A</td><td>0.3970</td></tr>
+            <tr><td>350 kcmil</td><td>310A</td><td>250A</td><td>300A</td><td>0.5346</td></tr>
+            <tr><td>500 kcmil</td><td>380A</td><td>310A</td><td>350–400A</td><td>0.7854</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:0.78rem;color:#9ca3af;margin-top:6px">* Apply 80% derate for continuous loads. Apply correction factors for >30°C ambient or >3 CCC in raceway.</p>
+    </div>
+
+    <!-- SECTION 2: OCPD SIZES -->
+    <div class="ref-section">
+      <h2>🔌 Standard OCPD (Breaker/Fuse) Sizes — NEC 240.6(A)</h2>
+      <div class="ocpd-grid">
+        <div class="ocpd-chip common">15A</div>
+        <div class="ocpd-chip common">20A</div>
+        <div class="ocpd-chip common">25A</div>
+        <div class="ocpd-chip common">30A</div>
+        <div class="ocpd-chip">35A</div>
+        <div class="ocpd-chip common">40A</div>
+        <div class="ocpd-chip">45A</div>
+        <div class="ocpd-chip common">50A</div>
+        <div class="ocpd-chip">60A</div>
+        <div class="ocpd-chip">70A</div>
+        <div class="ocpd-chip">80A</div>
+        <div class="ocpd-chip">90A</div>
+        <div class="ocpd-chip common">100A</div>
+        <div class="ocpd-chip">110A</div>
+        <div class="ocpd-chip common">125A</div>
+        <div class="ocpd-chip common">150A</div>
+        <div class="ocpd-chip">175A</div>
+        <div class="ocpd-chip common">200A</div>
+        <div class="ocpd-chip">225A</div>
+        <div class="ocpd-chip">250A</div>
+        <div class="ocpd-chip">300A</div>
+        <div class="ocpd-chip">350A</div>
+        <div class="ocpd-chip">400A</div>
+        <div class="ocpd-chip">450A</div>
+        <div class="ocpd-chip">500A</div>
+        <div class="ocpd-chip">600A</div>
+      </div>
+      <p style="font-size:0.78rem;color:#9ca3af;margin-top:10px"><span style="background:#ecfdf5;border:1px solid #6ee7b7;padding:2px 6px;border-radius:4px;color:#065f46;font-weight:600;font-size:0.75rem;">Green = most common</span> &nbsp; Rule of 80%: continuous loads must not exceed 80% of OCPD rating.</p>
+    </div>
+
+    <!-- SECTION 3: GFCI / AFCI -->
+    <div class="ref-section">
+      <h2>🛡 GFCI &amp; AFCI Requirements</h2>
+      <div class="gfci-grid">
+        <div>
+          <p class="section-label">GFCI Required Locations — NEC 210.8</p>
+          <ul class="gfci-list">
+            <li>Bathrooms (all receptacles)</li>
+            <li>Garages &amp; accessory structures</li>
+            <li>Outdoors (all exterior receptacles)</li>
+            <li>Crawl spaces &amp; unfinished basements</li>
+            <li>Kitchens (countertop receptacles within 6 ft of sink)</li>
+            <li>Sinks — within 6 ft of any sink</li>
+            <li>Boathouses &amp; boat hoists</li>
+            <li>Swimming pools, spas, hot tubs</li>
+            <li>Rooftops</li>
+            <li>Dishwashers (2020+ NEC)</li>
+            <li>Laundry areas &amp; utility sinks</li>
+            <li>Receptacles in areas with standing water risk</li>
+          </ul>
+        </div>
+        <div>
+          <p class="section-label">AFCI Required Locations — NEC 210.12</p>
+          <ul class="gfci-list">
+            <li>Bedrooms (all branch circuits)</li>
+            <li>Living rooms, parlors, libraries</li>
+            <li>Dens, sun rooms, recreation rooms</li>
+            <li>Kitchens &amp; dining rooms (2020+ NEC)</li>
+            <li>Hallways &amp; closets</li>
+            <li>Dormitory units</li>
+            <li>Guest rooms in hotels</li>
+            <li>All 120V, 15 &amp; 20A branch circuits in dwellings (2020 NEC)</li>
+          </ul>
+          <p style="font-size:0.78rem;color:#9ca3af;margin-top:8px">Note: AFCI + GFCI dual-function breakers available where both required.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 4: WORKING CLEARANCES -->
+    <div class="ref-section">
+      <h2>📐 Working Clearances — NEC 110.26(A)</h2>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Voltage to Ground</th>
+              <th>Condition 1<br><small>(Insulated/grounded walls)</small></th>
+              <th>Condition 2<br><small>(Grounded surfaces)</small></th>
+              <th>Condition 3<br><small>(Exposed live parts)</small></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="highlight-row">
+              <td>0–150V</td>
+              <td>3 ft (36")</td>
+              <td>3 ft (36")</td>
+              <td>3 ft (36")</td>
+            </tr>
+            <tr>
+              <td>151–600V</td>
+              <td>3 ft (36")</td>
+              <td>3.5 ft (42")</td>
+              <td>4 ft (48")</td>
+            </tr>
+            <tr>
+              <td>601–2,500V</td>
+              <td>3 ft (36")</td>
+              <td>4 ft (48")</td>
+              <td>5 ft (60")</td>
+            </tr>
+            <tr>
+              <td>2,501–9,000V</td>
+              <td>4 ft (48")</td>
+              <td>5 ft (60")</td>
+              <td>6 ft (72")</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="clearance-note">Minimum width of working space: 30" or width of equipment (whichever is greater). Minimum headroom: 6.5 ft or height of equipment. Dedicated space above panels extends to structural ceiling (NEC 110.26(F)).</p>
+
+      <div style="margin-top:16px">
+        <p class="section-label">Common Voltages to Ground</p>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px">
+          <div class="ocpd-chip">120/240V 1φ → 120V to ground</div>
+          <div class="ocpd-chip">120/208V 3φ → 120V to ground</div>
+          <div class="ocpd-chip">277/480V 3φ → 277V to ground</div>
+          <div class="ocpd-chip">240V delta → up to 208V to ground (wild leg)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 5: QUICK RULES -->
+    <div class="ref-section">
+      <h2>📋 Quick Rules to Remember</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div>
+          <ul class="gfci-list">
+            <li>Box fill: #12 = 2.25 cu in/conductor</li>
+            <li>Conduit fill: 40% max (3+ wires)</li>
+            <li>Voltage drop: 3% branch, 5% total</li>
+            <li>Continuous load = 80% of OCPD</li>
+            <li>Next size up rule: NEC 240.4(B)</li>
+            <li>Neutrals don't count as CCC if ≤50% 3rd harmonic</li>
+          </ul>
+        </div>
+        <div>
+          <ul class="gfci-list">
+            <li>Receptacle spacing: every 12 ft / 6 ft from door</li>
+            <li>Kitchen countertop: every 4 ft</li>
+            <li>Bathroom: at least 1 receptacle per sink</li>
+            <li>Smoke detectors: NEC 210.12 / 760</li>
+            <li>Tamper-resistant: all 15/20A 125V receptacles in dwellings</li>
+            <li>Grounding electrode: 25 Ω max or supplement</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD CTA -->
+    <div class="card-cta">
+      <p>For complete NEC answers on the job — code citations, explanations, and troubleshooting in seconds.</p>
+      <a class="card-cta-btn" href="https://apps.apple.com/us/app/ask-neta/id6747808696?utm_source=tools&utm_medium=free_tool&utm_campaign=nec_cheat_sheet" target="_blank" rel="noopener">
+        Ask NETA. — Free Download
+      </a>
+    </div>
+
+  </div><!-- end #refCard -->
+
+  <div class="footer-cta">
+    <h3>Need more than a cheat sheet?</h3>
+    <p>Ask NETA. gives you instant NEC answers with code citations — right on the job site. Free for electricians.</p>
+    <a class="app-btn" href="https://apps.apple.com/us/app/ask-neta/id6747808696?utm_source=tools&utm_medium=free_tool&utm_campaign=nec_cheat_sheet" target="_blank" rel="noopener">
+      Download Ask NETA. — Free
+    </a>
+  </div>
+</main>
+
+<footer>
+  <p>&copy; 2026 Ask NETA. · <a href="https://askneta.com?utm_source=tools&utm_medium=free_tool&utm_campaign=nec_cheat_sheet">askneta.com</a> · Reference only — always verify with current adopted NEC edition and local amendments.</p>
+</footer>
+
+</body>
+</html>

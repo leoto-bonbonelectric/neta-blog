@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Box Fill Calculator (NEC 314.16) — Free NEC Calculator | Ask NETA.</title>
+  <meta name="description" content="Free NEC 314.16 box fill calculator for electricians. Enter conductors, devices, clamps, and grounds to instantly check if your electrical box is code-compliant.">
+  <meta name="keywords" content="box fill calculator, NEC 314.16, electrical box fill, conductor fill, junction box calculator">
+  <link rel="canonical" href="https://askneta.com/tools/box-fill-calculator">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Box Fill Calculator (NEC 314.16) | Ask NETA.">
+  <meta property="og:description" content="Free NEC 314.16 box fill calculator. Check if your electrical box is code-compliant in seconds.">
+  <meta property="og:type" content="website">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #f3f4f6;
+      color: #1f2937;
+      min-height: 100vh;
+    }
+    /* HEADER */
+    header {
+      background: #10b981;
+      color: white;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .logo { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px; }
+    .logo span { opacity: 0.85; font-weight: 400; font-size: 1rem; margin-left: 8px; }
+    .header-nav a {
+      color: white;
+      text-decoration: none;
+      font-size: 0.85rem;
+      opacity: 0.9;
+      margin-left: 12px;
+    }
+    /* MAIN */
+    main { max-width: 680px; margin: 0 auto; padding: 24px 16px 40px; }
+    h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 8px; color: #111827; }
+    .intro {
+      font-size: 0.95rem;
+      color: #4b5563;
+      line-height: 1.6;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .intro strong { color: #10b981; }
+    /* CARDS */
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+    .card h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #10b981;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+    /* FORM ELEMENTS */
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #374151;
+      margin-bottom: 4px;
+    }
+    select, input[type="number"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      color: #111827;
+      background: white;
+      appearance: none;
+      -webkit-appearance: none;
+      transition: border-color 0.15s;
+    }
+    select:focus, input[type="number"]:focus {
+      outline: none;
+      border-color: #10b981;
+      box-shadow: 0 0 0 3px rgba(16,185,129,0.12);
+    }
+    .form-row { margin-bottom: 14px; }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .form-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width: 480px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .form-grid-3 { grid-template-columns: 1fr 1fr; }
+    }
+    .divider {
+      height: 1px;
+      background: #f3f4f6;
+      margin: 16px 0;
+    }
+    /* BUTTON */
+    .btn-calc {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: #10b981;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      font-family: inherit;
+      letter-spacing: 0.3px;
+    }
+    .btn-calc:hover { background: #059669; }
+    .btn-calc:active { transform: scale(0.98); }
+    /* RESULTS */
+    #results { display: none; }
+    .result-box {
+      background: white;
+      border-radius: 12px;
+      padding: 24px 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+    .result-status {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .status-badge {
+      font-size: 1.4rem;
+      font-weight: 700;
+      padding: 6px 20px;
+      border-radius: 30px;
+      letter-spacing: 1px;
+    }
+    .badge-pass { background: #d1fae5; color: #065f46; }
+    .badge-fail { background: #fee2e2; color: #991b1b; }
+    .result-label { font-size: 0.95rem; color: #6b7280; }
+    .result-numbers {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 400px) {
+      .result-numbers { grid-template-columns: 1fr 1fr; }
+    }
+    .result-metric {
+      background: #f9fafb;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+    .result-metric .value {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #111827;
+    }
+    .result-metric .unit { font-size: 0.75rem; color: #9ca3af; }
+    .result-metric .metric-label { font-size: 0.75rem; color: #6b7280; margin-top: 2px; }
+    .progress-bar-wrap {
+      background: #e5e7eb;
+      border-radius: 8px;
+      height: 12px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .progress-bar {
+      height: 100%;
+      border-radius: 8px;
+      transition: width 0.4s ease;
+    }
+    .progress-pass { background: #10b981; }
+    .progress-fail { background: #ef4444; }
+    .progress-label { font-size: 0.8rem; color: #6b7280; margin-top: 4px; }
+    .breakdown-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .breakdown-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.875rem;
+      color: #374151;
+      padding: 4px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .breakdown-row:last-child { border-bottom: none; }
+    /* FOOTER CTA */
+    .footer-cta {
+      background: #111827;
+      color: white;
+      border-radius: 12px;
+      padding: 24px 20px;
+      text-align: center;
+      margin-top: 32px;
+    }
+    .footer-cta h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+    .footer-cta p { font-size: 0.9rem; color: #9ca3af; margin-bottom: 16px; line-height: 1.5; }
+    .app-btn {
+      display: inline-block;
+      background: #10b981;
+      color: white;
+      text-decoration: none;
+      padding: 12px 28px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: background 0.15s;
+    }
+    .app-btn:hover { background: #059669; }
+    footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #9ca3af;
+      padding: 20px;
+    }
+    footer a { color: #10b981; text-decoration: none; }
+    .helper-text { font-size: 0.78rem; color: #9ca3af; margin-top: 3px; }
+    .reset-btn {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background: transparent;
+      color: #6b7280;
+      border: 1.5px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      font-family: inherit;
+      margin-top: 8px;
+      transition: all 0.15s;
+    }
+    .reset-btn:hover { border-color: #10b981; color: #10b981; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">NETA. <span>Free NEC Tools</span></div>
+  <nav class="header-nav">
+    <a href="conduit-fill-calculator.html">Conduit</a>
+    <a href="voltage-drop-calculator.html">Voltage Drop</a>
+    <a href="nec-cheat-sheet.html">Cheat Sheet</a>
+  </nav>
+</header>
+
+<main>
+  <h1>NEC 314.16 Box Fill Calculator</h1>
+  <p class="intro">
+    <strong>NEC 314.16</strong> requires every electrical box to have enough volume for all conductors, devices, clamps, and grounds. Overfilled boxes are a code violation and a safety hazard. Enter your box and fill details below to check compliance instantly.
+  </p>
+
+  <!-- BOX SIZE -->
+  <div class="card">
+    <h2>📦 Box Size</h2>
+    <div class="form-row">
+      <label for="boxPreset">Standard Box (or enter custom dimensions below)</label>
+      <select id="boxPreset" onchange="applyPreset()">
+        <option value="">— Select a standard box —</option>
+        <option value="18">Single-gang device box — 18 cu in</option>
+        <option value="20.3">Single-gang device box deep — 20.3 cu in</option>
+        <option value="34">Two-gang device box — 34 cu in</option>
+        <option value="42">Two-gang deep device box — 42 cu in</option>
+        <option value="21">4×4 square box (1-1/4" deep) — 21 cu in</option>
+        <option value="30.3">4×4 square box (1-1/2" deep) — 30.3 cu in</option>
+        <option value="42.0">4×4 square box (2-1/8" deep) — 42 cu in</option>
+        <option value="14.5">Octagon box (1-1/2" deep) — 14.5 cu in</option>
+        <option value="21.5">Octagon box (2-1/8" deep) — 21.5 cu in</option>
+        <option value="0">Custom dimensions →</option>
+      </select>
+    </div>
+    <div id="customDims">
+      <p class="helper-text" style="margin-bottom:10px">Enter custom box dimensions (all in inches):</p>
+      <div class="form-grid-3">
+        <div class="form-row">
+          <label>Length (in)</label>
+          <input type="number" id="boxL" placeholder="e.g. 4" min="0" step="0.125" oninput="clearPreset()">
+        </div>
+        <div class="form-row">
+          <label>Width (in)</label>
+          <input type="number" id="boxW" placeholder="e.g. 4" min="0" step="0.125" oninput="clearPreset()">
+        </div>
+        <div class="form-row">
+          <label>Depth (in)</label>
+          <input type="number" id="boxD" placeholder="e.g. 2.125" min="0" step="0.125" oninput="clearPreset()">
+        </div>
+      </div>
+      <p class="helper-text">Box volume = L × W × D (cubic inches)</p>
+    </div>
+  </div>
+
+  <!-- CONDUCTORS -->
+  <div class="card">
+    <h2>🔌 Conductors (count each conductor entering the box)</h2>
+    <p class="helper-text" style="margin-bottom:12px">Count each current-carrying conductor individually. Do not count pigtails under 12 inches.</p>
+    <div class="form-grid">
+      <div class="form-row">
+        <label>#14 AWG conductors</label>
+        <input type="number" id="c14" value="0" min="0" step="1" placeholder="0">
+        <p class="helper-text">2.00 cu in each</p>
+      </div>
+      <div class="form-row">
+        <label>#12 AWG conductors</label>
+        <input type="number" id="c12" value="0" min="0" step="1" placeholder="0">
+        <p class="helper-text">2.25 cu in each</p>
+      </div>
+      <div class="form-row">
+        <label>#10 AWG conductors</label>
+        <input type="number" id="c10" value="0" min="0" step="1" placeholder="0">
+        <p class="helper-text">2.50 cu in each</p>
+      </div>
+      <div class="form-row">
+        <label>#8 AWG conductors</label>
+        <input type="number" id="c8" value="0" min="0" step="1" placeholder="0">
+        <p class="helper-text">3.00 cu in each</p>
+      </div>
+      <div class="form-row">
+        <label>#6 AWG conductors</label>
+        <input type="number" id="c6" value="0" min="0" step="1" placeholder="0">
+        <p class="helper-text">5.00 cu in each</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEVICES, CLAMPS, GROUNDS -->
+  <div class="card">
+    <h2>⚡ Devices, Clamps & Grounds</h2>
+    <div class="form-grid">
+      <div class="form-row">
+        <label>Devices (switches/receptacles)</label>
+        <input type="number" id="devices" value="0" min="0" step="1" placeholder="0">
+        <p class="helper-text">= 2× largest conductor in that yoke</p>
+      </div>
+      <div class="form-row">
+        <label>Internal clamps</label>
+        <input type="number" id="clamps" value="0" min="0" step="1" placeholder="0">
+        <p class="helper-text">All clamps together = 1× largest conductor</p>
+      </div>
+    </div>
+    <div class="form-row">
+      <label>Equipment grounding conductors (total count)</label>
+      <input type="number" id="grounds" value="0" min="0" step="1" placeholder="0">
+      <p class="helper-text">All grounds together = 1× largest conductor in box (regardless of how many)</p>
+    </div>
+    <div class="form-row" style="margin-top:4px">
+      <label>Largest AWG size in box</label>
+      <select id="largestAWG">
+        <option value="2.00">#14 AWG (2.00 cu in)</option>
+        <option value="2.25" selected>#12 AWG (2.25 cu in)</option>
+        <option value="2.50">#10 AWG (2.50 cu in)</option>
+        <option value="3.00">#8 AWG (3.00 cu in)</option>
+        <option value="5.00">#6 AWG (5.00 cu in)</option>
+      </select>
+      <p class="helper-text">Used to calculate device, clamp, and ground allowances</p>
+    </div>
+  </div>
+
+  <button class="btn-calc" onclick="calculate()">Calculate Box Fill</button>
+  <button class="reset-btn" onclick="resetForm()">Reset</button>
+
+  <!-- RESULTS -->
+  <div id="results">
+    <div class="result-box">
+      <div class="result-status">
+        <div class="status-badge" id="statusBadge">PASS</div>
+        <div class="result-label" id="statusText"></div>
+      </div>
+
+      <div class="result-numbers">
+        <div class="result-metric">
+          <div class="value" id="fillRequired">—</div>
+          <div class="unit">cu in</div>
+          <div class="metric-label">Fill Required</div>
+        </div>
+        <div class="result-metric">
+          <div class="value" id="boxVolume">—</div>
+          <div class="unit">cu in</div>
+          <div class="metric-label">Box Volume</div>
+        </div>
+        <div class="result-metric">
+          <div class="value" id="remaining">—</div>
+          <div class="unit">cu in</div>
+          <div class="metric-label">Remaining</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="progress-label" id="progressLabel">0% full</div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar" id="progressBar" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="result-box">
+      <div class="breakdown-title">Fill Breakdown</div>
+      <div id="breakdownList"></div>
+    </div>
+  </div>
+
+  <!-- FOOTER CTA -->
+  <div class="footer-cta">
+    <h3>Need more than a calculator?</h3>
+    <p>Ask NETA. gets you the full NEC answer — code citations, explanations, and job-ready answers in seconds. Free download.</p>
+    <a class="app-btn" href="https://apps.apple.com/us/app/ask-neta/id6747808696?utm_source=tools&utm_medium=free_tool&utm_campaign=box_fill_calculator" target="_blank" rel="noopener">
+      Download Ask NETA. — Free
+    </a>
+  </div>
+</main>
+
+<footer>
+  <p>&copy; 2026 Ask NETA. · <a href="https://askneta.com?utm_source=tools&utm_medium=free_tool&utm_campaign=box_fill_calculator">askneta.com</a> · NEC calculations are for reference only; verify with the AHJ.</p>
+</footer>
+
+<script>
+  // NEC Table 314.16(B) — conductor volume allowances (cubic inches)
+  const CONDUCTOR_VOLUMES = {
+    14: 2.00,
+    12: 2.25,
+    10: 2.50,
+    8:  3.00,
+    6:  5.00
+  };
+
+  function applyPreset() {
+    const sel = document.getElementById('boxPreset');
+    const val = parseFloat(sel.value);
+    if (!isNaN(val) && val > 0) {
+      document.getElementById('boxL').value = '';
+      document.getElementById('boxW').value = '';
+      document.getElementById('boxD').value = '';
+    }
+  }
+
+  function clearPreset() {
+    document.getElementById('boxPreset').value = '';
+  }
+
+  function getBoxVolume() {
+    const preset = parseFloat(document.getElementById('boxPreset').value);
+    if (!isNaN(preset) && preset > 0) return preset;
+    const l = parseFloat(document.getElementById('boxL').value) || 0;
+    const w = parseFloat(document.getElementById('boxW').value) || 0;
+    const d = parseFloat(document.getElementById('boxD').value) || 0;
+    return l * w * d;
+  }
+
+  function calculate() {
+    const boxVol = getBoxVolume();
+    if (!boxVol || boxVol <= 0) {
+      alert('Please enter a box size or select a standard box.');
+      return;
+    }
+
+    const largestVol = parseFloat(document.getElementById('largestAWG').value);
+
+    // Conductors
+    const c14 = parseInt(document.getElementById('c14').value) || 0;
+    const c12 = parseInt(document.getElementById('c12').value) || 0;
+    const c10 = parseInt(document.getElementById('c10').value) || 0;
+    const c8  = parseInt(document.getElementById('c8').value)  || 0;
+    const c6  = parseInt(document.getElementById('c6').value)  || 0;
+
+    // Devices, clamps, grounds
+    const devices = parseInt(document.getElementById('devices').value) || 0;
+    const clamps  = parseInt(document.getElementById('clamps').value)  || 0;
+    const grounds = parseInt(document.getElementById('grounds').value) || 0;
+
+    // Fill calculations per NEC 314.16(B)
+    const fill14 = c14 * CONDUCTOR_VOLUMES[14];
+    const fill12 = c12 * CONDUCTOR_VOLUMES[12];
+    const fill10 = c10 * CONDUCTOR_VOLUMES[10];
+    const fill8  = c8  * CONDUCTOR_VOLUMES[8];
+    const fill6  = c6  * CONDUCTOR_VOLUMES[6];
+
+    // Devices: each device = 2× the largest conductor on that yoke
+    // NEC 314.16(B)(4): each yoke = 2× largest conductor
+    const fillDevices = devices * 2 * largestVol;
+
+    // Clamps: all clamps combined = 1× largest conductor (if any clamps present)
+    const fillClamps = clamps > 0 ? largestVol : 0;
+
+    // Grounds: all grounds combined = 1× largest ground conductor (using largestVol)
+    const fillGrounds = grounds > 0 ? largestVol : 0;
+
+    const totalFill = fill14 + fill12 + fill10 + fill8 + fill6 + fillDevices + fillClamps + fillGrounds;
+    const remaining = boxVol - totalFill;
+    const pct = Math.min((totalFill / boxVol) * 100, 200);
+    const pass = totalFill <= boxVol;
+
+    // Render results
+    document.getElementById('results').style.display = 'block';
+    document.getElementById('fillRequired').textContent = totalFill.toFixed(2);
+    document.getElementById('boxVolume').textContent = boxVol.toFixed(2);
+    document.getElementById('remaining').textContent = remaining.toFixed(2);
+
+    const badge = document.getElementById('statusBadge');
+    badge.textContent = pass ? 'PASS ✓' : 'FAIL ✗';
+    badge.className = 'status-badge ' + (pass ? 'badge-pass' : 'badge-fail');
+
+    document.getElementById('statusText').textContent = pass
+      ? `Box has ${remaining.toFixed(2)} cu in of space remaining.`
+      : `Box is over capacity by ${Math.abs(remaining).toFixed(2)} cu in. Upgrade to a larger box.`;
+
+    const bar = document.getElementById('progressBar');
+    bar.style.width = Math.min(pct, 100) + '%';
+    bar.className = 'progress-bar ' + (pass ? 'progress-pass' : 'progress-fail');
+    document.getElementById('progressLabel').textContent = `${pct.toFixed(1)}% of box capacity used`;
+
+    // Breakdown
+    const rows = [];
+    if (c14 > 0) rows.push([`${c14}× #14 AWG conductors`, `${fill14.toFixed(2)} cu in`]);
+    if (c12 > 0) rows.push([`${c12}× #12 AWG conductors`, `${fill12.toFixed(2)} cu in`]);
+    if (c10 > 0) rows.push([`${c10}× #10 AWG conductors`, `${fill10.toFixed(2)} cu in`]);
+    if (c8  > 0) rows.push([`${c8}× #8 AWG conductors`,  `${fill8.toFixed(2)} cu in`]);
+    if (c6  > 0) rows.push([`${c6}× #6 AWG conductors`,  `${fill6.toFixed(2)} cu in`]);
+    if (devices > 0) rows.push([`${devices}× device(s) @ 2× ${largestVol} cu in`, `${fillDevices.toFixed(2)} cu in`]);
+    if (clamps  > 0) rows.push([`Internal clamp(s) — all combined`, `${fillClamps.toFixed(2)} cu in`]);
+    if (grounds > 0) rows.push([`Ground wire(s) — all combined`, `${fillGrounds.toFixed(2)} cu in`]);
+    rows.push(['<strong>TOTAL FILL REQUIRED</strong>', `<strong>${totalFill.toFixed(2)} cu in</strong>`]);
+
+    document.getElementById('breakdownList').innerHTML = rows.map(r =>
+      `<div class="breakdown-row"><span>${r[0]}</span><span>${r[1]}</span></div>`
+    ).join('');
+
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function resetForm() {
+    document.getElementById('boxPreset').value = '';
+    ['boxL','boxW','boxD','c14','c12','c10','c8','c6','devices','clamps','grounds'].forEach(id => {
+      const el = document.getElementById(id);
+      el.value = ['boxL','boxW','boxD'].includes(id) ? '' : '0';
+    });
+    document.getElementById('largestAWG').value = '2.25';
+    document.getElementById('results').style.display = 'none';
+  }
+</script>
+</body>
+</html>
